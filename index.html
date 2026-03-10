@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset = "UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>finacial Resilience</title>
+  <style>
+    body {
+      font-family:Arial, sans-serif;
+      Line-height: 1.6;
+      margin:20px;
+      background-color: #f9f9f9;
+    }
+    header{
+      text-align: center;
+      padding-bottom:20px;
+    }
+
+    img{
+      width:300px;
+     float:left;
+     margin-right: 20px;
+    }
+    section {
+      background-color:#fff;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0.1);
+    }
+    h2 {
+      color:#333;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #0077cc;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Financial Resilience</h1>
+    <nav>
+      <a href="#profile">Profile</a>
+      <a href="#expenses" >Expenses</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#recommendations">Recommendations</a>
+        </nav>
+      </header>
+
+      <sections id="info">
+       <img src="Image/images.jpg">
+       <p>
+      Financial resilience refers to the ability of individuals or households to withstand and recover from financial shocks such as job loss, unexpected expenses, or economic downturns. 
+      It involves effective financial planning, saving, budgeting, and managing risks.
+       </p>
+    </sections>
+
+  <section id="profile">
+    <h2>User Profile</h2>
+    <form>
+    <label>Household Members: <input type="number" name="members"></label>
+     <label>Monthly Income: <input type="number" name="income"></label><br><br>
+      <label>Fixed Expenses (Rent, Loan, Utilities): <input type="text" name="fixed_expenses"></label><br><br>
+      <label>Financial Goals: <input type="text" name="goals"></label><br><br>
+      <button type="submit">Save Profile</button>
+    </form>
+  </section>
+<section id="expense">
+  <h2>Income & Expenses</h2>
+  <form>
+    <label>Date: <input type="date" name="date"></label><br><br>
+    <label>Category: 
+        <select name="category">
+          <option>Rent</option>
+          <option>Loan</option>
+          <option>Groceries</option>
+          <option>Utilities</option>
+          <option>Savings</option>
+        </select>
+      </label><br><br>
+      <label>Amount: <input type="number" name="amount"></label><br><br>
+      <button type="submit">Add Expense</button>
+  </form>
+</section>
+
+  <section id="dashboard">
+    <h2>Dashboard</h2>
+    <p>Visualize your income, expenses, and challenges here.</p>
+   
+  </section>
+</body>
+</html>
