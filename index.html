@@ -1,109 +1,1799 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset = "UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>finacial Resilience</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Budget Bhutan – Financial Awareness Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES – Bhutan-inspired palette
+    ============================================================ */
+    :root {
+      --red:        #C0392B;
+      --red-dark:   #922B21;
+      --red-light:  #E8594A;
+      --gold:       #D4A017;
+      --gold-light: #F0C040;
+      --gold-pale:  #FDF3D0;
+      --cream:      #FAF7F0;
+      --white:      #FFFFFF;
+      --neutral-100:#F5F1EB;
+      --neutral-200:#E8E1D5;
+      --neutral-400:#A89B87;
+      --neutral-600:#6B5F52;
+      --neutral-800:#3A3028;
+      --text:       #2C2416;
+      --shadow-sm:  0 2px 8px rgba(60,40,20,0.10);
+      --shadow-md:  0 6px 24px rgba(60,40,20,0.14);
+      --shadow-lg:  0 16px 48px rgba(60,40,20,0.18);
+      --radius:     14px;
+      --transition: 0.28s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
     body {
-      font-family:Arial, sans-serif;
-      Line-height: 1.6;
-      margin:20px;
-      background-color: #f9f9f9;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
     }
-    header{
+    h1,h2,h3,h4 { font-family: 'DM Serif Display', serif; line-height: 1.25; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--neutral-100); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(250,247,240,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 2px solid var(--gold-light);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .nav-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 68px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'DM Serif Display', serif; font-size: 1.25rem;
+      color: var(--red-dark);
+    }
+    .nav-logo span.logo-icon { font-size: 1.6rem; }
+    .nav-links {
+      display: flex; gap: 4px; list-style: none;
+    }
+    .nav-links a {
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 0.875rem; font-weight: 500; color: var(--neutral-600);
+      transition: var(--transition);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--gold-pale); color: var(--red-dark);
+    }
+    .nav-burger {
+      display: none; flex-direction: column; gap: 5px;
+      width: 32px; padding: 4px;
+    }
+    .nav-burger span {
+      display: block; height: 2px; background: var(--neutral-800);
+      border-radius: 2px; transition: var(--transition);
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 68px; left: 0; right: 0;
+      background: var(--cream); border-bottom: 2px solid var(--gold-light);
+      box-shadow: var(--shadow-md); z-index: 999; padding: 12px 0 20px;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a {
+      display: block; padding: 12px 28px;
+      font-weight: 500; color: var(--neutral-600);
+      border-bottom: 1px solid var(--neutral-200);
+      transition: var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--red); background: var(--gold-pale); }
+
+    /* ============================================================
+       PAGES (single-page architecture)
+    ============================================================ */
+    .page { display: none; min-height: 100vh; padding-top: 68px; }
+    .page.active { display: block; }
+
+    /* ============================================================
+       SECTION WRAPPERS
+    ============================================================ */
+    .section { padding: 80px 24px; }
+    .section-sm { padding: 48px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--neutral-800); margin-bottom: 16px;
+    }
+    .section-desc {
+      font-size: 1.05rem; color: var(--neutral-600);
+      max-width: 600px; margin-bottom: 48px;
+    }
+    .divider {
+      width: 56px; height: 4px; background: var(--gold);
+      border-radius: 2px; margin: 16px 0 32px;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px; border-radius: 10px;
+      font-weight: 600; font-size: 0.95rem;
+      transition: var(--transition);
+    }
+    .btn-primary {
+      background: var(--red); color: #fff;
+      box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--red-dark);
+      box-shadow: 0 6px 22px rgba(192,57,43,0.45);
+      transform: translateY(-2px);
+    }
+    .btn-gold {
+      background: var(--gold); color: var(--neutral-800);
+      box-shadow: 0 4px 16px rgba(212,160,23,0.3);
+    }
+    .btn-gold:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 2px solid var(--red); color: var(--red);
+    }
+    .btn-outline:hover { background: var(--red); color: #fff; }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 28px;
+      border: 1px solid var(--neutral-200);
+      transition: var(--transition);
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+    .card-grid { display: grid; gap: 24px; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    /* ============================================================
+       ██ PAGE 1: HOME
+    ============================================================ */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 50%, #b03030 100%);
+      color: #fff; padding: 100px 24px 80px;
+      min-height: 94vh; display: flex; align-items: center;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(212,160,23,0.22) 0%, transparent 60%),
+        radial-gradient(ellipse at 10% 90%, rgba(255,255,255,0.07) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    /* Decorative geometric pattern */
+    .hero::after {
+      content: '';
+      position: absolute; top: 0; right: 0; bottom: 0; width: 42%;
+      background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'/%3E%3C/svg%3E") repeat;
+      opacity: 0.5; pointer-events: none;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 16px; border-radius: 50px;
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold-light);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      line-height: 1.12; margin-bottom: 24px;
+    }
+    .hero h1 span { color: var(--gold-light); }
+    .hero-sub {
+      font-size: 1.15rem; opacity: 0.9; max-width: 560px;
+      margin-bottom: 40px; line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-stats {
+      margin-top: 64px; display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 24px; max-width: 700px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px; padding: 20px;
+    }
+    .hero-stat .num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem; color: var(--gold-light);
+    }
+    .hero-stat .lbl { font-size: 0.82rem; opacity: 0.8; margin-top: 4px; }
+
+    /* Why Budgeting */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .why-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 32px 24px; border-top: 4px solid var(--gold);
+      box-shadow: var(--shadow-sm); transition: var(--transition);
+    }
+    .why-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .why-icon { font-size: 2.4rem; margin-bottom: 16px; }
+    .why-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--neutral-800); }
+    .why-card p { font-size: 0.9rem; color: var(--neutral-600); line-height: 1.65; }
+
+    /* CTA Banner */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      border-radius: 20px; padding: 56px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .cta-banner h2 { font-size: 2rem; color: var(--neutral-800); }
+    .cta-banner p { color: var(--neutral-600); margin-top: 8px; max-width: 500px; }
+
+    /* Dashboard Preview */
+    .preview-card {
+      background: var(--white); border-radius: 20px;
+      box-shadow: var(--shadow-lg); overflow: hidden;
+      border: 1px solid var(--neutral-200);
+    }
+    .preview-header {
+      background: linear-gradient(90deg, var(--red-dark), var(--red));
+      padding: 16px 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .preview-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .preview-body {
+      padding: 32px; background: var(--neutral-100);
+      min-height: 200px; display: flex; align-items: center; justify-content: center;
       text-align: center;
-      padding-bottom:20px;
+    }
+    .preview-body p {
+      color: var(--neutral-600); font-size: 1rem;
+    }
+    .preview-body .big-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* ============================================================
+       ██ PAGE 2: DASHBOARD
+    ============================================================ */
+    .dashboard-hero {
+      background: linear-gradient(135deg, var(--neutral-800), var(--neutral-600));
+      color: #fff; padding: 60px 24px 50px;
+    }
+    .dashboard-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .dashboard-hero p { opacity: 0.8; max-width: 680px; font-size: 1.05rem; }
+
+    .tableau-wrap {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow-lg); overflow: hidden;
+      border: 2px solid var(--gold-light);
+    }
+    .tableau-bar {
+      background: linear-gradient(90deg, var(--red-dark), var(--red));
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; color: #fff;
+    }
+    .tableau-bar span { font-weight: 600; font-size: 0.9rem; }
+    .tableau-iframe-container {
+      position: relative; padding-bottom: 75%;
+      height: 0; overflow: hidden;
+      min-height: 500px;
+    }
+    .tableau-iframe-container iframe {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none; min-height: 700px;
     }
 
-    img{
-      width:300px;
-     float:left;
-     margin-right: 20px;
+    .insight-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .insight-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 24px; box-shadow: var(--shadow-sm);
+      border-left: 5px solid var(--red);
+      transition: var(--transition);
     }
-    section {
-      background-color:#fff;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0.1);
+    .insight-card:nth-child(2) { border-left-color: var(--gold); }
+    .insight-card:nth-child(3) { border-left-color: #2E7D32; }
+    .insight-card:nth-child(4) { border-left-color: #1565C0; }
+    .insight-card:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+    .insight-icon { font-size: 2rem; margin-bottom: 12px; }
+    .insight-card h3 { font-size: 1rem; color: var(--neutral-800); margin-bottom: 8px; }
+    .insight-card p { font-size: 0.875rem; color: var(--neutral-600); line-height: 1.6; }
+
+    /* ============================================================
+       ██ PAGE 3: BUDGET EXAMPLES
+    ============================================================ */
+    .budget-hero {
+      background: linear-gradient(135deg, var(--gold-pale), var(--neutral-100));
+      padding: 60px 24px 50px; border-bottom: 3px solid var(--gold);
     }
-    h2 {
-      color:#333;
+    .budget-hero h1 { color: var(--neutral-800); font-size: clamp(1.8rem, 4vw, 2.8rem); }
+    .budget-hero p { color: var(--neutral-600); max-width: 680px; margin-top: 12px; }
+
+    .household-tabs {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px;
+    }
+    .htab {
+      padding: 10px 22px; border-radius: 50px;
+      border: 2px solid var(--neutral-200); font-weight: 600;
+      font-size: 0.875rem; transition: var(--transition); color: var(--neutral-600);
+    }
+    .htab.active, .htab:hover {
+      background: var(--red); border-color: var(--red); color: #fff;
     }
 
-    nav a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #0077cc;
+    .budget-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; align-items: start; }
+    @media (max-width: 780px) { .budget-layout { grid-template-columns: 1fr; } }
+
+    .budget-list { display: flex; flex-direction: column; gap: 12px; }
+    .budget-item {
+      background: var(--white); border-radius: 10px;
+      padding: 16px 20px; box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: 16px;
+      border: 1px solid var(--neutral-200);
     }
-    nav a:hover {
-      text-decoration: underline;
+    .budget-item-icon { font-size: 1.5rem; width: 40px; text-align: center; }
+    .budget-item-info { flex: 1; }
+    .budget-item-info .cat { font-weight: 600; font-size: 0.9rem; color: var(--neutral-800); }
+    .budget-item-info .sub { font-size: 0.78rem; color: var(--neutral-400); }
+    .budget-item-bar-wrap { width: 130px; }
+    .budget-item-bar-bg {
+      height: 8px; background: var(--neutral-200); border-radius: 4px; overflow: hidden;
+    }
+    .budget-item-bar-fill {
+      height: 100%; border-radius: 4px; background: var(--red);
+      transition: width 0.6s ease;
+    }
+    .budget-item-pct { font-size: 0.8rem; color: var(--neutral-600); margin-top: 4px; text-align: right; }
+    .budget-item-amt { font-weight: 700; font-size: 1rem; color: var(--red); width: 80px; text-align: right; }
+
+    /* Donut chart */
+    .donut-wrap { position: relative; width: 240px; height: 240px; margin: 0 auto; }
+    .donut-wrap svg { width: 100%; height: 100%; }
+    .donut-center {
+      position: absolute; inset: 0; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+    }
+    .donut-center .total-label { font-size: 0.75rem; color: var(--neutral-400); text-transform: uppercase; letter-spacing: 0.08em; }
+    .donut-center .total-val { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--neutral-800); }
+
+    .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--neutral-600); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .budget-tip-box {
+      background: linear-gradient(135deg, var(--gold-pale), #fffbec);
+      border: 2px solid var(--gold); border-radius: 14px;
+      padding: 20px 24px; margin-top: 24px;
+    }
+    .budget-tip-box h4 { font-size: 0.95rem; color: var(--neutral-800); margin-bottom: 6px; }
+    .budget-tip-box p { font-size: 0.85rem; color: var(--neutral-600); }
+
+    /* ============================================================
+       ██ PAGE 4: SAVINGS TIPS
+    ============================================================ */
+    .tips-hero {
+      background: linear-gradient(135deg, #1B5E20, #2E7D32);
+      color: #fff; padding: 60px 24px 50px;
+    }
+    .tips-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .tips-hero p { opacity: 0.85; max-width: 680px; }
+
+    .tip-category-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 8px;
+    }
+    .tips-feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+    .tip-feature-card {
+      background: var(--white); border-radius: 16px;
+      box-shadow: var(--shadow-sm); overflow: hidden;
+      border: 1px solid var(--neutral-200); transition: var(--transition);
+    }
+    .tip-feature-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); }
+    .tip-card-header {
+      padding: 20px 24px; display: flex; align-items: center; gap: 14px;
+    }
+    .tip-card-header .ico { font-size: 2rem; }
+    .tip-card-header h3 { font-size: 1.05rem; color: var(--neutral-800); }
+    .tip-card-header .badge {
+      margin-left: auto; padding: 3px 10px; border-radius: 50px;
+      font-size: 0.7rem; font-weight: 700; background: var(--gold-pale); color: var(--gold-dark, #b8860b);
+    }
+    .tip-card-body { padding: 0 24px 24px; }
+    .tip-card-body p { font-size: 0.9rem; color: var(--neutral-600); line-height: 1.65; margin-bottom: 16px; }
+    .tip-steps { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .tip-steps li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.875rem; color: var(--neutral-600);
+    }
+    .tip-steps li::before {
+      content: '✓'; color: #2E7D32; font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
     }
 
-    ul {
-      list-style-type: disc;
-      margin-left: 20px;
+    /* Progress visual */
+    .savings-ladder {
+      background: var(--white); border-radius: 16px;
+      padding: 32px; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--neutral-200);
     }
+    .ladder-rung {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 0; border-bottom: 1px dashed var(--neutral-200);
+    }
+    .ladder-rung:last-child { border-bottom: none; }
+    .rung-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--red); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+    }
+    .rung-content h4 { font-size: 0.95rem; color: var(--neutral-800); margin-bottom: 2px; }
+    .rung-content p { font-size: 0.82rem; color: var(--neutral-400); }
+    .rung-goal {
+      margin-left: auto; font-weight: 700; font-size: 0.9rem;
+      color: #2E7D32;
+    }
+
+    /* ============================================================
+       ██ PAGE 5: QUIZ
+    ============================================================ */
+    .quiz-hero {
+      background: linear-gradient(135deg, #1A237E, #283593);
+      color: #fff; padding: 60px 24px 50px;
+    }
+    .quiz-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .quiz-hero p { opacity: 0.85; max-width: 680px; }
+
+    .quiz-container { max-width: 700px; margin: 0 auto; }
+    .quiz-progress-wrap { margin-bottom: 36px; }
+    .quiz-progress-info {
+      display: flex; justify-content: space-between;
+      font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 8px;
+    }
+    .quiz-progress-track {
+      height: 8px; background: var(--neutral-200);
+      border-radius: 4px; overflow: hidden;
+    }
+    .quiz-progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--red), var(--gold));
+      border-radius: 4px; transition: width 0.5s ease;
+    }
+
+    .quiz-card {
+      background: var(--white); border-radius: 20px;
+      box-shadow: var(--shadow-md); padding: 40px;
+      border: 1px solid var(--neutral-200);
+    }
+    .quiz-q-num {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--red); margin-bottom: 12px;
+    }
+    .quiz-q-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem; color: var(--neutral-800); margin-bottom: 32px;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 12px; }
+    .quiz-option {
+      padding: 16px 20px; border-radius: 12px;
+      border: 2px solid var(--neutral-200); cursor: pointer;
+      font-size: 0.95rem; font-weight: 500; color: var(--neutral-600);
+      transition: var(--transition); text-align: left;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .quiz-option:hover { border-color: var(--red); color: var(--red); background: #fff5f4; }
+    .quiz-option.selected { border-color: var(--red); background: #fff5f4; color: var(--red); }
+    .quiz-option.correct { border-color: #2E7D32; background: #f1f8e9; color: #2E7D32; }
+    .quiz-option.wrong { border-color: #c62828; background: #ffebee; color: #c62828; }
+    .quiz-option-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid currentColor; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .quiz-nav {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-top: 32px;
+    }
+
+    /* Result */
+    .quiz-result { text-align: center; }
+    .result-circle {
+      width: 160px; height: 160px; border-radius: 50%;
+      margin: 0 auto 28px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+    }
+    .result-circle .score { font-size: 3rem; line-height: 1; }
+    .result-circle .score-denom { font-size: 1rem; opacity: 0.7; }
+    .result-grade { font-size: 1.6rem; color: var(--neutral-800); margin-bottom: 12px; }
+    .result-msg { color: var(--neutral-600); max-width: 500px; margin: 0 auto 28px; }
+    .result-tips { text-align: left; margin-top: 28px; }
+    .result-tips h4 { margin-bottom: 16px; color: var(--neutral-800); }
+    .result-tip-item {
+      display: flex; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--neutral-200);
+      font-size: 0.9rem; color: var(--neutral-600);
+      align-items: flex-start;
+    }
+    .result-tip-item:last-child { border-bottom: none; }
+    .result-tip-item .tip-ico { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ============================================================
+       ██ PAGE 6: ABOUT
+    ============================================================ */
+    .about-hero {
+      background: linear-gradient(135deg, var(--red-dark), #6B1500);
+      color: #fff; padding: 80px 24px 60px; text-align: center;
+    }
+    .about-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 16px; }
+    .about-hero p { opacity: 0.85; font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+    .about-card {
+      background: var(--white); border-radius: 16px;
+      padding: 32px 28px; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--neutral-200); transition: var(--transition);
+    }
+    .about-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+    .about-card .aco { font-size: 2.5rem; margin-bottom: 16px; }
+    .about-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--neutral-800); }
+    .about-card p { font-size: 0.9rem; color: var(--neutral-600); line-height: 1.65; }
+
+    .privacy-notice {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border: 2px solid #a5d6a7; border-radius: 16px; padding: 32px;
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .privacy-notice .pico { font-size: 2.5rem; flex-shrink: 0; }
+    .privacy-notice h3 { font-size: 1.1rem; color: #1B5E20; margin-bottom: 10px; }
+    .privacy-notice p { font-size: 0.9rem; color: #2E7D32; line-height: 1.65; }
+
+    .team-card {
+      background: var(--white); border-radius: 14px;
+      padding: 24px; text-align: center;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--neutral-200);
+    }
+    .team-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), var(--gold));
+      margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .team-card h4 { font-size: 0.95rem; color: var(--neutral-800); margin-bottom: 4px; }
+    .team-card p { font-size: 0.8rem; color: var(--neutral-400); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
     footer {
-      text-align: center;
-      margin-top: 20px;
-      color: #555;
+      background: var(--neutral-800); color: #fff;
+      padding: 56px 24px 28px;
     }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+    }
+    @media (max-width: 700px) { .footer-inner { grid-template-columns: 1fr; gap: 32px; } }
+    .footer-brand h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem; color: var(--gold-light); margin-bottom: 12px;
+    }
+    .footer-brand p { font-size: 0.875rem; opacity: 0.7; line-height: 1.7; max-width: 280px; }
+    .footer-col h4 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 0.875rem; opacity: 0.7; transition: var(--transition);
+    }
+    .footer-col ul li a:hover { opacity: 1; color: var(--gold-light); }
+    .footer-bottom {
+      max-width: 1100px; margin: 40px auto 0;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      font-size: 0.8rem; opacity: 0.6;
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes slideRight {
+      from { transform: scaleX(0); } to { transform: scaleX(1); }
+    }
+    .fade-up {
+      opacity: 0; animation: fadeUp 0.6s ease forwards;
+    }
+    .fade-up:nth-child(1) { animation-delay: 0.05s; }
+    .fade-up:nth-child(2) { animation-delay: 0.15s; }
+    .fade-up:nth-child(3) { animation-delay: 0.25s; }
+    .fade-up:nth-child(4) { animation-delay: 0.35s; }
+
+    .hero h1, .hero-sub, .hero-btns, .hero-badge {
+      animation: fadeUp 0.7s ease forwards;
+    }
+    .hero-badge { animation-delay: 0s; }
+    .hero h1 { animation-delay: 0.1s; }
+    .hero-sub { animation-delay: 0.2s; }
+    .hero-btns { animation-delay: 0.3s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+      .section { padding: 56px 20px; }
+      .cta-banner { padding: 36px 28px; text-align: center; }
+      .cta-banner .btn { margin: 0 auto; }
+      .quiz-card { padding: 28px 20px; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+
+    /* Utility */
+    .text-center { text-align: center; }
+    .mt-4 { margin-top: 16px; }
+    .mt-8 { margin-top: 32px; }
+    .mt-12 { margin-top: 48px; }
+    .bg-neutral { background: var(--neutral-100); }
+
+    /* Accordion for tips */
+    .accordion { margin-top: 8px; }
+    .acc-item {
+      border: 1px solid var(--neutral-200); border-radius: 10px;
+      overflow: hidden; margin-bottom: 8px;
+    }
+    .acc-head {
+      width: 100%; padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--white); font-weight: 600; font-size: 0.9rem;
+      color: var(--neutral-700, #504535); cursor: pointer;
+      transition: var(--transition);
+    }
+    .acc-head:hover { background: var(--gold-pale); }
+    .acc-head .acc-arrow { transition: var(--transition); }
+    .acc-head.open .acc-arrow { transform: rotate(180deg); }
+    .acc-body {
+      display: none; padding: 0 20px 18px;
+      font-size: 0.875rem; color: var(--neutral-600); line-height: 1.7;
+    }
+    .acc-body.open { display: block; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Financial Resilience</h1>
-    <nav>
-      <a href="#profile">Profile</a>
-      <a href="#expenses" >Expenses</a>
-      <a href="#dashboard">Dashboard</a>
-      <a href="#recommendations">Recommendations</a>
-        </nav>
-      </header>
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="showPage('home')">
+      <span class="logo-icon">🏔️</span>
+      Smart Budget Bhutan
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" onclick="showPage('home')" data-page="home" class="active">Home</a></li>
+      <li><a href="#" onclick="showPage('dashboard')" data-page="dashboard">Dashboard</a></li>
+      <li><a href="#" onclick="showPage('budget')" data-page="budget">Budget Examples</a></li>
+      <li><a href="#" onclick="showPage('tips')" data-page="tips">Savings Tips</a></li>
+      <li><a href="#" onclick="showPage('quiz')" data-page="quiz">Quiz</a></li>
+      <li><a href="#" onclick="showPage('about')" data-page="about">About</a></li>
+    </ul>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-      <sections id="info">
-       <img src="Image/images.jpg">
-       <p>
-      Financial resilience refers to the ability of individuals or households to withstand and recover from financial shocks such as job loss, unexpected expenses, or economic downturns. 
-      It involves effective financial planning, saving, budgeting, and managing risks.
-       </p>
-    </sections>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="showPage('home');closeMobileMenu()">🏠 Home</a>
+  <a href="#" onclick="showPage('dashboard');closeMobileMenu()">📊 Dashboard</a>
+  <a href="#" onclick="showPage('budget');closeMobileMenu()">💰 Budget Examples</a>
+  <a href="#" onclick="showPage('tips');closeMobileMenu()">💡 Savings Tips</a>
+  <a href="#" onclick="showPage('quiz');closeMobileMenu()">📝 Quiz</a>
+  <a href="#" onclick="showPage('about');closeMobileMenu()">ℹ️ About</a>
+</div>
 
-  <section id="profile">
-    <h2>User Profile</h2>
-    <form>
-    <label>Household Members: <input type="number" name="members"></label>
-     <label>Monthly Income: <input type="number" name="income"></label><br><br>
-      <label>Fixed Expenses (Rent, Loan, Utilities): <input type="text" name="fixed_expenses"></label><br><br>
-      <label>Financial Goals: <input type="text" name="goals"></label><br><br>
-      <button type="submit">Save Profile</button>
-    </form>
+
+<!-- ============================================================
+     PAGE 1: HOME
+============================================================ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">🇧🇹 Bhutan Financial Awareness Initiative</div>
+      <h1>Smart Budget<br/><span>Bhutan</span></h1>
+      <p class="hero-sub">Empowering households in urban Bhutan with the knowledge, tools, and data insights to build lasting financial resilience.</p>
+      <div class="hero-btns">
+        <button class="btn btn-gold" onclick="showPage('dashboard')">📊 Explore Data</button>
+        <button class="btn btn-outline" style="border-color:#fff;color:#fff" onclick="showPage('quiz')">📝 Take the Quiz</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num">72%</div>
+          <div class="lbl">of households lack formal budgets</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">3×</div>
+          <div class="lbl">more resilient with emergency savings</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">BTN</div>
+          <div class="lbl">local currency tracked in our data</div>
+        </div>
+      </div>
+    </div>
   </section>
-<section id="expense">
-  <h2>Income & Expenses</h2>
-  <form>
-    <label>Date: <input type="date" name="date"></label><br><br>
-    <label>Category: 
-        <select name="category">
-          <option>Rent</option>
-          <option>Loan</option>
-          <option>Groceries</option>
-          <option>Utilities</option>
-          <option>Savings</option>
-        </select>
-      </label><br><br>
-      <label>Amount: <input type="number" name="amount"></label><br><br>
-      <button type="submit">Add Expense</button>
-  </form>
-</section>
 
-  <section id="dashboard">
-    <h2>Dashboard</h2>
-    <p>Visualize your income, expenses, and challenges here.</p>
-   
+  <!-- Why Budgeting -->
+  <section class="section bg-neutral">
+    <div class="container">
+      <div class="section-label">Why it matters</div>
+      <h2 class="section-title">Financial Resilience Starts at Home</h2>
+      <div class="divider"></div>
+      <div class="why-grid">
+        <div class="why-card fade-up">
+          <div class="why-icon">🛡️</div>
+          <h3>Build a Safety Net</h3>
+          <p>An emergency fund of just 3 months of expenses can protect your family from unexpected job loss, medical bills, or economic downturns.</p>
+        </div>
+        <div class="why-card fade-up">
+          <div class="why-icon">📈</div>
+          <h3>Track & Grow</h3>
+          <p>Understanding where your money goes is the first step to making smarter decisions. Even small changes in habits lead to measurable savings.</p>
+        </div>
+        <div class="why-card fade-up">
+          <div class="why-icon">🎓</div>
+          <h3>Invest in Education</h3>
+          <p>Bhutanese families that prioritize education spending report higher long-term financial stability across generations.</p>
+        </div>
+        <div class="why-card fade-up">
+          <div class="why-icon">🤝</div>
+          <h3>Community Strength</h3>
+          <p>Financially resilient households contribute to stronger, more stable communities — a cornerstone of Bhutan's Gross National Happiness.</p>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner">
+        <div>
+          <h2>Explore Real Financial Insights</h2>
+          <p>Dive into our interactive Tableau dashboard built on household financial data from urban Bhutan. No sign-up required.</p>
+        </div>
+        <button class="btn btn-primary" onclick="showPage('dashboard')">View Dashboard →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Preview -->
+  <section class="section bg-neutral">
+    <div class="container">
+      <div class="section-label">Data Preview</div>
+      <h2 class="section-title">Insights from Urban Bhutan</h2>
+      <div class="divider"></div>
+      <p class="section-desc">Our embedded Tableau dashboard provides a window into real household financial patterns — income, expenses, savings, and resilience indicators.</p>
+      <div class="preview-card">
+        <div class="preview-header">
+          <div class="preview-dot" style="background:#ff5f57"></div>
+          <div class="preview-dot" style="background:#febc2e"></div>
+          <div class="preview-dot" style="background:#28c840"></div>
+          <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;margin-left:8px">Smart Budget Bhutan – Tableau Dashboard</span>
+        </div>
+        <div class="preview-body">
+          <div>
+            <div class="big-icon">📊</div>
+            <p style="font-size:1.1rem;font-weight:600;color:var(--neutral-800);margin-bottom:8px">Interactive Financial Dashboard</p>
+            <p>Household income trends · Expense patterns · Savings behaviour · Resilience indicators</p>
+            <br/>
+            <button class="btn btn-primary" onclick="showPage('dashboard')" style="margin:0 auto">Open Full Dashboard →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Explore</div>
+      <h2 class="section-title">Everything You Need</h2>
+      <div class="divider"></div>
+      <div class="card-grid card-grid-3">
+        <div class="card" style="cursor:pointer" onclick="showPage('budget')">
+          <div style="font-size:2rem;margin-bottom:12px">🏘️</div>
+          <h3 style="margin-bottom:8px">Budget Examples</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">See sample household budgets across different income levels in Bhutan.</p>
+          <p style="color:var(--red);font-weight:600;margin-top:16px;font-size:0.875rem">Explore →</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('tips')">
+          <div style="font-size:2rem;margin-bottom:12px">💡</div>
+          <h3 style="margin-bottom:8px">Savings Tips</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">Practical, actionable financial advice tailored for Bhutanese households.</p>
+          <p style="color:var(--red);font-weight:600;margin-top:16px;font-size:0.875rem">Read More →</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('quiz')">
+          <div style="font-size:2rem;margin-bottom:12px">🧠</div>
+          <h3 style="margin-bottom:8px">Financial Quiz</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">Test your financial awareness with our interactive quiz and get your score.</p>
+          <p style="color:var(--red);font-weight:600;margin-top:16px;font-size:0.875rem">Take Quiz →</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE 2: DASHBOARD
+============================================================ -->
+<div id="page-dashboard" class="page">
+  <div class="dashboard-hero">
+    <div class="container">
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:12px;font-weight:600">📊 Interactive Data</div>
+      <h1>Financial Resilience Dashboard</h1>
+      <p>Explore household-level financial data from urban Bhutan. Use the interactive controls within the Tableau dashboard to filter, compare, and uncover insights.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <!-- Insight Cards -->
+      <div class="section-label">What the data shows</div>
+      <h2 class="section-title">Key Financial Indicators</h2>
+      <div class="divider"></div>
+      <div class="insight-cards" style="margin-bottom:48px">
+        <div class="insight-card">
+          <div class="insight-icon">💵</div>
+          <h3>Household Income Trends</h3>
+          <p>Median household incomes in urban Bhutan show modest growth, with significant variance across sectors such as civil service, trade, and informal employment.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">🛒</div>
+          <h3>Expense Patterns</h3>
+          <p>Food, housing, and education consistently rank as the top three expenditure categories, collectively absorbing 60–75% of monthly household income.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">🏦</div>
+          <h3>Savings Behaviour</h3>
+          <p>Fewer than 40% of surveyed households maintain a dedicated savings account. Those who do report significantly higher financial confidence during hardships.</p>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">📐</div>
+          <h3>Resilience Indicators</h3>
+          <p>Financial resilience composite scores reflect savings buffers, income diversity, and debt levels — with urban households outperforming rural counterparts.</p>
+        </div>
+      </div>
+
+      <!-- Tableau Embed -->
+      <div class="tableau-wrap">
+        <div class="tableau-bar">
+          <span>🏔️ Smart Budget Bhutan — Tableau Public Dashboard</span>
+          <span style="opacity:0.7;font-size:0.75rem">Interactive · Use filters inside the dashboard</span>
+        </div>
+        <div class="tableau-iframe-container">
+          <iframe
+            src="https://public.tableau.com/views/FinancialResilienceattheHouseholdLevelinUrbanBhutan/IntroducingSmartBudgetBhutan2?:embed=y&:display_count=yes&:showVizHome=no&:toolbar=yes&:animate_transition=yes"
+            title="Financial Resilience at the Household Level in Urban Bhutan"
+            allowfullscreen
+            style="width:100%;height:900px;border:none;">
+          </iframe>
+        </div>
+      </div>
+
+      <div class="card mt-12" style="background:var(--gold-pale);border:2px solid var(--gold)">
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="font-size:1.8rem">ℹ️</span>
+          <div>
+            <h3 style="margin-bottom:8px;font-size:1rem">About this Dashboard</h3>
+            <p style="font-size:0.875rem;color:var(--neutral-600)">This Tableau dashboard was created as part of the Smart Budget Bhutan Financial Awareness Platform. It visualises aggregate, anonymised household financial data from urban Bhutan. The dashboard does not contain any personally identifiable information and is intended solely for educational and awareness purposes. Data is sourced from household surveys and is presented here under a public data licence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE 3: BUDGET EXAMPLES
+============================================================ -->
+<div id="page-budget" class="page">
+  <div class="budget-hero">
+    <div class="container">
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:12px;font-weight:600">💰 Illustrative Examples</div>
+      <h1>Sample Household Budgets</h1>
+      <p>These are illustrative, non-real budget examples designed to help you understand how different Bhutanese households might allocate their monthly income. No real personal data is shown.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="household-tabs" id="householdTabs">
+        <button class="htab active" onclick="switchHousehold('entry')">Entry-Level 🏠</button>
+        <button class="htab" onclick="switchHousehold('mid')">Mid-Income 🏡</button>
+        <button class="htab" onclick="switchHousehold('upper')">Upper-Middle 🏰</button>
+      </div>
+
+      <div class="budget-layout" id="budgetLayout">
+        <!-- JS rendered -->
+      </div>
+
+      <div class="budget-tip-box mt-8">
+        <h4>📌 Budgeting Principle — The 50/30/20 Rule</h4>
+        <p>A widely recommended approach: allocate 50% of income to needs (housing, food, utilities), 30% to wants (dining out, entertainment), and 20% to savings and debt repayment. Adjust percentages to fit your own household situation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="section bg-neutral">
+    <div class="container">
+      <div class="section-label">Side-by-side comparison</div>
+      <h2 class="section-title">How Budgets Change With Income</h2>
+      <div class="divider"></div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)">
+          <thead>
+            <tr style="background:linear-gradient(90deg,var(--red-dark),var(--red));color:#fff">
+              <th style="padding:16px 20px;text-align:left;font-size:0.85rem;font-weight:600">Category</th>
+              <th style="padding:16px 20px;text-align:center;font-size:0.85rem;font-weight:600">Entry-Level<br/><small style="opacity:0.8">~BTN 12,000/mo</small></th>
+              <th style="padding:16px 20px;text-align:center;font-size:0.85rem;font-weight:600">Mid-Income<br/><small style="opacity:0.8">~BTN 22,000/mo</small></th>
+              <th style="padding:16px 20px;text-align:center;font-size:0.85rem;font-weight:600">Upper-Middle<br/><small style="opacity:0.8">~BTN 40,000/mo</small></th>
+            </tr>
+          </thead>
+          <tbody id="compTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE 4: SAVINGS TIPS
+============================================================ -->
+<div id="page-tips" class="page">
+  <div class="tips-hero">
+    <div class="container">
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:12px;font-weight:600">💡 Practical Guidance</div>
+      <h1>Savings Tips for Bhutanese Households</h1>
+      <p>Actionable strategies rooted in financial best practices, adapted for the urban Bhutan context. No income required — just commitment and consistency.</p>
+    </div>
+  </div>
+
+  <!-- Featured Tips -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Core Strategies</div>
+      <h2 class="section-title">Build Your Financial Foundation</h2>
+      <div class="divider"></div>
+      <div class="tips-feature-grid">
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#fff3e0,#fff8f0)">
+            <span class="ico">🆘</span>
+            <h3>Emergency Fund</h3>
+            <span class="badge">Priority #1</span>
+          </div>
+          <div class="tip-card-body">
+            <p>An emergency fund is your financial safety net. Aim to save 3–6 months of essential expenses in a separate, accessible account before investing.</p>
+            <ul class="tip-steps">
+              <li>Start with a goal of BTN 5,000 as your first milestone</li>
+              <li>Open a separate savings account earmarked only for emergencies</li>
+              <li>Automate a small monthly transfer, even BTN 500/month helps</li>
+              <li>Replenish immediately after any withdrawal</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9)">
+            <span class="ico">✂️</span>
+            <h3>Cut Unnecessary Spending</h3>
+            <span class="badge">Quick Wins</span>
+          </div>
+          <div class="tip-card-body">
+            <p>Identifying and reducing low-value spending is often the fastest path to freeing up savings. Track before you cut.</p>
+            <ul class="tip-steps">
+              <li>Review last month's expenses and categorise each one</li>
+              <li>Identify 3 subscriptions or habits you can reduce or eliminate</li>
+              <li>Cook at home more often — dining out is a major budget leak</li>
+              <li>Use the 24-hour rule before any non-essential purchase</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#e3f2fd,#f0f7ff)">
+            <span class="ico">📅</span>
+            <h3>Monthly Budget Plan</h3>
+            <span class="badge">Habit Builder</span>
+          </div>
+          <div class="tip-card-body">
+            <p>A monthly budget doesn't restrict your life — it gives you permission to spend on what matters most without guilt.</p>
+            <ul class="tip-steps">
+              <li>List all income sources at the start of each month</li>
+              <li>Assign every ngultrum a purpose before spending it</li>
+              <li>Review your budget mid-month and adjust if needed</li>
+              <li>Celebrate when you stay within budget — reward progress</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#fce4ec,#fff0f4)">
+            <span class="ico">🧠</span>
+            <h3>Smart Saving Strategies</h3>
+            <span class="badge">Advanced</span>
+          </div>
+          <div class="tip-card-body">
+            <p>Once you've mastered budgeting basics, these strategies help your money work harder over time.</p>
+            <ul class="tip-steps">
+              <li>Pay yourself first — save before spending on discretionary items</li>
+              <li>Use fixed deposits for funds you won't need for 6–12 months</li>
+              <li>Explore RICBL or BNB savings products designed for households</li>
+              <li>Consider diversifying into government bonds when savings grow</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#f3e5f5,#faf0ff)">
+            <span class="ico">🎯</span>
+            <h3>Goal-Based Saving</h3>
+            <span class="badge">Motivating</span>
+          </div>
+          <div class="tip-card-body">
+            <p>Saving without a goal is like driving without a destination. Concrete targets make it easier to stay on track.</p>
+            <ul class="tip-steps">
+              <li>Define 1 short-term (under 1 year) and 1 long-term saving goal</li>
+              <li>Calculate the monthly amount needed to reach each goal</li>
+              <li>Create a visual tracker (chart on paper works great!)</li>
+              <li>Review goals quarterly and adjust amounts as income changes</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tip-feature-card">
+          <div class="tip-card-header" style="background:linear-gradient(135deg,#fff8e1,#fffbf0)">
+            <span class="ico">📚</span>
+            <h3>Financial Education</h3>
+            <span class="badge">Long-term</span>
+          </div>
+          <div class="tip-card-body">
+            <p>Investing in your own financial knowledge pays compounding dividends throughout your life.</p>
+            <ul class="tip-steps">
+              <li>Read one financial article or resource per week</li>
+              <li>Teach basic budgeting concepts to your children</li>
+              <li>Attend free workshops from the Royal Monetary Authority of Bhutan</li>
+              <li>Join community saving groups (e.g., local credit cooperatives)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Savings Ladder -->
+  <section class="section bg-neutral">
+    <div class="container">
+      <div class="section-label">Step-by-step path</div>
+      <h2 class="section-title">The Savings Ladder</h2>
+      <div class="divider"></div>
+      <p class="section-desc">Progress through these stages at your own pace. Each rung builds the foundation for the next.</p>
+      <div style="max-width:680px">
+        <div class="savings-ladder">
+          <div class="ladder-rung">
+            <div class="rung-num">1</div>
+            <div class="rung-content">
+              <h4>Break Even</h4>
+              <p>Cover all monthly expenses without going into debt</p>
+            </div>
+            <div class="rung-goal">Stage 1</div>
+          </div>
+          <div class="ladder-rung">
+            <div class="rung-num">2</div>
+            <div class="rung-content">
+              <h4>Small Buffer</h4>
+              <p>Save BTN 5,000 as a starter emergency cushion</p>
+            </div>
+            <div class="rung-goal">BTN 5K</div>
+          </div>
+          <div class="ladder-rung">
+            <div class="rung-num">3</div>
+            <div class="rung-content">
+              <h4>1-Month Emergency Fund</h4>
+              <p>One full month of essential expenses saved</p>
+            </div>
+            <div class="rung-goal">1× expenses</div>
+          </div>
+          <div class="ladder-rung">
+            <div class="rung-num">4</div>
+            <div class="rung-content">
+              <h4>3-Month Emergency Fund</h4>
+              <p>The financial resilience baseline recommended by experts</p>
+            </div>
+            <div class="rung-goal">3× expenses</div>
+          </div>
+          <div class="ladder-rung">
+            <div class="rung-num">5</div>
+            <div class="rung-content">
+              <h4>Goal-Based Savings</h4>
+              <p>Save for specific goals: children's education, home, business</p>
+            </div>
+            <div class="rung-goal">6× expenses</div>
+          </div>
+          <div class="ladder-rung">
+            <div class="rung-num">6</div>
+            <div class="rung-content">
+              <h4>Wealth Building</h4>
+              <p>Invest surplus savings in fixed deposits, bonds, or property</p>
+            </div>
+            <div class="rung-goal">🏆 Invest</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Common Questions</div>
+      <h2 class="section-title">Frequently Asked</h2>
+      <div class="divider"></div>
+      <div class="accordion" style="max-width:720px" id="faqAccordion">
+        <!-- JS rendered -->
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE 5: QUIZ
+============================================================ -->
+<div id="page-quiz" class="page">
+  <div class="quiz-hero">
+    <div class="container">
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:12px;font-weight:600">🧠 Test Your Knowledge</div>
+      <h1>Financial Awareness Quiz</h1>
+      <p>10 quick questions about your financial habits and knowledge. No income or personal data collected — just your awareness level. Takes about 3 minutes.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container quiz-container" id="quizContainer">
+      <!-- JS rendered -->
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE 6: ABOUT
+============================================================ -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="container">
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:12px;font-weight:600">ℹ️ Our Mission</div>
+      <h1>About Smart Budget Bhutan</h1>
+      <p>A financial literacy initiative designed to empower Bhutanese households with knowledge, not data collection.</p>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Our purpose</div>
+      <h2 class="section-title">Why We Built This</h2>
+      <div class="divider"></div>
+      <p style="font-size:1.05rem;color:var(--neutral-600);max-width:720px;margin-bottom:48px;line-height:1.8">
+        Smart Budget Bhutan was created to address a gap in financial literacy resources tailored specifically for urban Bhutanese households. While macro-economic data exists, accessible and actionable guidance at the household level has been limited. This platform bridges that gap through data storytelling, practical education, and interactive tools — all without collecting any personal financial information.
+      </p>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="aco">📊</div>
+          <h3>Data-Driven Insights</h3>
+          <p>Our Tableau dashboard presents aggregate, anonymised data from household surveys conducted in urban Bhutan. All visualisations are intended for educational awareness only.</p>
+        </div>
+        <div class="about-card">
+          <div class="aco">🎓</div>
+          <h3>Financial Education</h3>
+          <p>Every page on this platform — from budget examples to savings tips — is grounded in internationally recognised financial literacy principles adapted for the Bhutanese context.</p>
+        </div>
+        <div class="about-card">
+          <div class="aco">🔒</div>
+          <h3>Privacy First</h3>
+          <p>We do not collect, store, or process any personal financial data. The quiz and budget tools are entirely client-side and no information is transmitted to any server.</p>
+        </div>
+        <div class="about-card">
+          <div class="aco">🇧🇹</div>
+          <h3>Bhutan-Centred</h3>
+          <p>Our content, examples, and data are specific to Bhutan's unique socioeconomic context, including the ngultrum, local institutions, and the principles of Gross National Happiness.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy Notice -->
+  <section class="section bg-neutral">
+    <div class="container">
+      <div class="privacy-notice">
+        <div class="pico">🛡️</div>
+        <div>
+          <h3>No Personal Data Collected — Ever</h3>
+          <p>This website is a purely educational platform. It does not collect, store, process, or share any personal financial information, income data, or identifying information of any kind. The Financial Resilience Quiz operates entirely in your browser and no responses are recorded or transmitted. All budget examples shown are fictional and illustrative only. The Tableau dashboard embedded on this site displays pre-aggregated, anonymised data from household surveys and does not identify any individual respondent.</p>
+        </div>
+      </div>
+
+      <div class="card mt-8" style="border-left:5px solid var(--gold)">
+        <h3 style="margin-bottom:12px">Data Source Attribution</h3>
+        <p style="font-size:0.9rem;color:var(--neutral-600);line-height:1.7">The interactive dashboard embedded in this platform is hosted on Tableau Public and was authored as part of the <strong>Financial Resilience at the Household Level in Urban Bhutan</strong> research initiative. The visualisation can be accessed directly at <a href="https://public.tableau.com/app/profile/jubita.gurung1895/viz/FinancialResilienceattheHouseholdLevelinUrbanBhutan/IntroducingSmartBudgetBhutan2" target="_blank" style="color:var(--red);font-weight:600">Tableau Public ↗</a>. All content on this educational platform is provided in good faith for awareness purposes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Values -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Our values</div>
+      <h2 class="section-title">What Guides Us</h2>
+      <div class="divider"></div>
+      <div class="card-grid card-grid-3">
+        <div class="card" style="text-align:center;border-top:4px solid var(--red)">
+          <div style="font-size:2.4rem;margin-bottom:12px">🌿</div>
+          <h3 style="margin-bottom:8px">Accessibility</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">Financial knowledge should be available to every Bhutanese household, regardless of income level or education background.</p>
+        </div>
+        <div class="card" style="text-align:center;border-top:4px solid var(--gold)">
+          <div style="font-size:2.4rem;margin-bottom:12px">⚖️</div>
+          <h3 style="margin-bottom:8px">Integrity</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">We present data and advice honestly, acknowledging limitations and avoiding sensationalism or misleading claims.</p>
+        </div>
+        <div class="card" style="text-align:center;border-top:4px solid #2E7D32">
+          <div style="font-size:2.4rem;margin-bottom:12px">🤲</div>
+          <h3 style="margin-bottom:8px">Empowerment</h3>
+          <p style="font-size:0.875rem;color:var(--neutral-600)">Our goal is to give people the tools to make their own informed financial decisions — not to prescribe a single path.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>🏔️ Smart Budget Bhutan</h3>
+      <p>A financial awareness and literacy platform for urban Bhutanese households. No personal data collected. Built for education and empowerment.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('home')">Home</a></li>
+        <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+        <li><a href="#" onclick="showPage('budget')">Budget Examples</a></li>
+        <li><a href="#" onclick="showPage('tips')">Savings Tips</a></li>
+        <li><a href="#" onclick="showPage('quiz')">Quiz</a></li>
+        <li><a href="#" onclick="showPage('about')">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://www.rma.org.bt" target="_blank">Royal Monetary Authority</a></li>
+        <li><a href="https://www.bnb.bt" target="_blank">Bank of Bhutan</a></li>
+        <li><a href="https://www.ricbl.com" target="_blank">RICBL Bhutan</a></li>
+        <li><a href="https://public.tableau.com/app/profile/jubita.gurung1895" target="_blank">Tableau Dashboard</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Smart Budget Bhutan · Educational Platform · No personal data collected</span>
+    <span>🇧🇹 Serving Urban Bhutan Households</span>
+  </div>
+</footer>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+
+// ============================================================
+// PAGE NAVIGATION
+// ============================================================
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  document.getElementById('page-' + pageId).classList.add('active');
+  // Update nav active
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === pageId);
+  });
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Page-specific inits
+  if (pageId === 'budget') initBudget();
+  if (pageId === 'quiz') initQuiz();
+  if (pageId === 'tips') initFaq();
+  return false;
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ============================================================
+// BUDGET EXAMPLES – DATA
+// ============================================================
+const HOUSEHOLDS = {
+  entry: {
+    label: 'Entry-Level Household',
+    income: 12000,
+    color: '#C0392B',
+    desc: 'Single income earner, 2-3 family members, renting in Thimphu',
+    items: [
+      { cat: 'Rent / Housing', icon: '🏠', pct: 35, color: '#C0392B' },
+      { cat: 'Food & Groceries', icon: '🛒', pct: 28, color: '#E67E22' },
+      { cat: 'Transport',       icon: '🚌', pct: 10, color: '#F39C12' },
+      { cat: 'Utilities',       icon: '💡', pct: 8,  color: '#3498DB' },
+      { cat: 'Education',       icon: '📚', pct: 7,  color: '#9B59B6' },
+      { cat: 'Savings',         icon: '🏦', pct: 7,  color: '#27AE60' },
+      { cat: 'Miscellaneous',   icon: '🧾', pct: 5,  color: '#95A5A6' },
+    ]
+  },
+  mid: {
+    label: 'Mid-Income Household',
+    income: 22000,
+    color: '#D4A017',
+    desc: 'Dual income, 3-4 family members, own or rented apartment',
+    items: [
+      { cat: 'Rent / Housing', icon: '🏠', pct: 30, color: '#C0392B' },
+      { cat: 'Food & Groceries', icon: '🛒', pct: 22, color: '#E67E22' },
+      { cat: 'Transport',       icon: '🚗', pct: 12, color: '#F39C12' },
+      { cat: 'Utilities',       icon: '💡', pct: 7,  color: '#3498DB' },
+      { cat: 'Education',       icon: '📚', pct: 10, color: '#9B59B6' },
+      { cat: 'Savings',         icon: '🏦', pct: 13, color: '#27AE60' },
+      { cat: 'Miscellaneous',   icon: '🎭', pct: 6,  color: '#95A5A6' },
+    ]
+  },
+  upper: {
+    label: 'Upper-Middle Household',
+    income: 40000,
+    color: '#27AE60',
+    desc: 'Dual high income, 4+ family members, owns property, vehicle',
+    items: [
+      { cat: 'Rent / Mortgage', icon: '🏰', pct: 25, color: '#C0392B' },
+      { cat: 'Food & Groceries', icon: '🛒', pct: 18, color: '#E67E22' },
+      { cat: 'Transport',       icon: '🚙', pct: 10, color: '#F39C12' },
+      { cat: 'Utilities',       icon: '💡', pct: 6,  color: '#3498DB' },
+      { cat: 'Education',       icon: '📚', pct: 12, color: '#9B59B6' },
+      { cat: 'Savings',         icon: '🏦', pct: 20, color: '#27AE60' },
+      { cat: 'Investments',     icon: '📈', pct: 5,  color: '#1ABC9C' },
+      { cat: 'Miscellaneous',   icon: '🎭', pct: 4,  color: '#95A5A6' },
+    ]
+  }
+};
+
+let currentHousehold = 'entry';
+
+function switchHousehold(key) {
+  currentHousehold = key;
+  document.querySelectorAll('.htab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderBudget();
+}
+
+function initBudget() {
+  renderBudget();
+  renderCompTable();
+}
+
+function renderBudget() {
+  const hh = HOUSEHOLDS[currentHousehold];
+  const layout = document.getElementById('budgetLayout');
+
+  // Build budget items
+  let itemsHTML = hh.items.map(item => {
+    const amt = Math.round(hh.income * item.pct / 100);
+    return `
+      <div class="budget-item">
+        <span class="budget-item-icon">${item.icon}</span>
+        <div class="budget-item-info">
+          <div class="cat">${item.cat}</div>
+          <div class="sub">BTN ${amt.toLocaleString()} / month</div>
+        </div>
+        <div class="budget-item-bar-wrap">
+          <div class="budget-item-bar-bg">
+            <div class="budget-item-bar-fill" style="width:${item.pct}%;background:${item.color}"></div>
+          </div>
+          <div class="budget-item-pct">${item.pct}%</div>
+        </div>
+        <div class="budget-item-amt" style="color:${item.color}">BTN ${amt.toLocaleString()}</div>
+      </div>`;
+  }).join('');
+
+  // Donut chart (SVG)
+  const r = 90, cx = 120, cy = 120, strokeW = 28;
+  const circumference = 2 * Math.PI * r;
+  let offset = 0;
+  let paths = hh.items.map(item => {
+    const dash = (item.pct / 100) * circumference;
+    const gap  = circumference - dash;
+    const path = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${item.color}"
+      stroke-width="${strokeW}" stroke-dasharray="${dash} ${gap}"
+      stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"
+      style="transition:stroke-dashoffset 0.6s ease"/>`;
+    offset += dash;
+    return path;
+  }).join('');
+
+  const legendHTML = hh.items.map(item =>
+    `<div class="legend-item">
+       <div class="legend-dot" style="background:${item.color}"></div>
+       <span>${item.cat} (${item.pct}%)</span>
+     </div>`
+  ).join('');
+
+  layout.innerHTML = `
+    <div>
+      <div style="margin-bottom:20px">
+        <h3 style="font-size:1.2rem;color:var(--neutral-800);margin-bottom:4px">${hh.label}</h3>
+        <p style="font-size:0.85rem;color:var(--neutral-400)">${hh.desc}</p>
+        <p style="font-size:1rem;color:var(--red);font-weight:700;margin-top:8px">Monthly Income: BTN ${hh.income.toLocaleString()}</p>
+      </div>
+      <div class="budget-list">${itemsHTML}</div>
+    </div>
+    <div>
+      <div class="card" style="text-align:center;position:sticky;top:90px">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Budget Breakdown</h3>
+        <div class="donut-wrap">
+          <svg viewBox="0 0 240 240">${paths}</svg>
+          <div class="donut-center">
+            <span class="total-label">Monthly</span>
+            <span class="total-val">BTN ${(hh.income/1000).toFixed(0)}K</span>
+          </div>
+        </div>
+        <div class="legend">${legendHTML}</div>
+      </div>
+    </div>`;
+}
+
+function renderCompTable() {
+  const cats = ['Rent / Housing', 'Food & Groceries', 'Transport', 'Utilities', 'Education', 'Savings'];
+  const hhKeys = ['entry', 'mid', 'upper'];
+  let rows = cats.map((cat, i) => {
+    let cells = hhKeys.map(key => {
+      const hh = HOUSEHOLDS[key];
+      const item = hh.items.find(it => it.cat.startsWith(cat.split(' ')[0]));
+      if (!item) return `<td style="padding:14px 20px;text-align:center;color:var(--neutral-400)">—</td>`;
+      const amt = Math.round(hh.income * item.pct / 100);
+      return `<td style="padding:14px 20px;text-align:center">
+        <span style="font-weight:700;color:${item.color}">BTN ${amt.toLocaleString()}</span>
+        <br/><small style="color:var(--neutral-400)">${item.pct}%</small>
+      </td>`;
+    }).join('');
+    const bg = i % 2 === 0 ? 'var(--white)' : 'var(--neutral-100)';
+    return `<tr style="background:${bg}">
+      <td style="padding:14px 20px;font-weight:600;color:var(--neutral-700,#504535)">${cat}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+  document.getElementById('compTable').innerHTML = rows;
+}
+
+// ============================================================
+// FAQ ACCORDION
+// ============================================================
+const FAQS = [
+  { q: "How much should I save each month?", a: "A common guideline is to save at least 10–20% of your monthly income. If that's not immediately possible, start smaller — even BTN 500/month builds the habit. Increase the amount gradually as your income grows or expenses shrink." },
+  { q: "What is an emergency fund and how big should it be?", a: "An emergency fund is a dedicated savings buffer for unexpected events: job loss, medical emergencies, or urgent repairs. Financial advisors typically recommend 3–6 months of your essential monthly expenses. Start with a goal of 1 month and work up from there." },
+  { q: "How do I stop spending on things I don't need?", a: "The most effective technique is the 24-hour rule: wait a full day before any non-essential purchase. Also, avoid shopping when hungry or stressed, unsubscribe from promotional emails, and track every expense to see patterns." },
+  { q: "Is it better to save or pay off debt first?", a: "In most cases, focus on building a small emergency buffer (BTN 5,000–10,000) first, then aggressively pay off high-interest debt (like credit cards or personal loans). Once debt is cleared, redirect those payments into savings." },
+  { q: "What savings options are available in Bhutan?", a: "Bhutan has several options: regular savings accounts at Bank of Bhutan, BDBL, or T-Bank; fixed deposit accounts for higher interest; RICBL insurance-linked savings plans; and the BNB pension fund for employed individuals. The Royal Monetary Authority regulates all licensed institutions." },
+  { q: "How do I teach my children about saving?", a: "Start early with a physical piggy bank for small children. As they grow, give a small weekly allowance and encourage splitting it: some for spending, some for saving, and some for giving. Involve them in household budget discussions age-appropriately." },
+];
+
+function initFaq() {
+  const acc = document.getElementById('faqAccordion');
+  if (acc.children.length > 0) return; // already rendered
+  acc.innerHTML = FAQS.map((faq, i) => `
+    <div class="acc-item">
+      <button class="acc-head" onclick="toggleAcc(this)">
+        <span>${faq.q}</span>
+        <span class="acc-arrow">▾</span>
+      </button>
+      <div class="acc-body">${faq.a}</div>
+    </div>`).join('');
+}
+
+function toggleAcc(btn) {
+  const body = btn.nextElementSibling;
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ============================================================
+// QUIZ – DATA & LOGIC
+// ============================================================
+const QUESTIONS = [
+  {
+    q: "Do you track your monthly expenses in any way?",
+    opts: ["Yes, I use an app or spreadsheet", "Yes, I keep a notebook", "Occasionally, but not consistently", "No, I don't track expenses"],
+    scores: [3, 3, 1, 0]
+  },
+  {
+    q: "Do you have a dedicated emergency savings fund?",
+    opts: ["Yes, covering 3+ months of expenses", "Yes, covering 1–2 months", "I have some savings but not specifically for emergencies", "No, I don't have emergency savings"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "How often do you set aside savings from your income?",
+    opts: ["Every month, consistently", "Most months", "Occasionally when I have leftover money", "Rarely or never"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "Do you create a monthly budget before spending?",
+    opts: ["Yes, every month", "Sometimes", "I have a rough mental estimate", "No, I spend as needs arise"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "How do you handle an unexpected expense (e.g., medical bill)?",
+    opts: ["Pay from my emergency fund", "Adjust other spending that month", "Borrow from family or friends", "Take out a loan or go into debt"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "Do you review your financial situation periodically?",
+    opts: ["Monthly or more often", "Every few months", "Annually or less", "Rarely or never"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "What percentage of your income do you typically save?",
+    opts: ["More than 20%", "10–20%", "Less than 10%", "I usually don't save"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "Do you have specific financial goals (e.g., home, education, retirement)?",
+    opts: ["Yes, written goals with a plan", "Yes, mental goals without a plan", "Vague aspirations", "No specific goals"],
+    scores: [3, 2, 1, 0]
+  },
+  {
+    q: "How do you manage your debt (loans, credit)?",
+    opts: ["I have no debt", "I pay more than the minimum monthly", "I pay exactly the minimum", "I sometimes miss payments"],
+    scores: [3, 3, 1, 0]
+  },
+  {
+    q: "How confident are you in your financial knowledge?",
+    opts: ["Very confident — I understand budgeting & investing", "Somewhat confident", "I know the basics", "I feel lost when it comes to finances"],
+    scores: [3, 2, 1, 0]
+  }
+];
+
+let quizState = { current: 0, answers: [], started: false };
+
+function initQuiz() {
+  quizState = { current: 0, answers: [], started: false };
+  renderQuizStart();
+}
+
+function renderQuizStart() {
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-card" style="text-align:center">
+      <div style="font-size:4rem;margin-bottom:20px">🧠</div>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;margin-bottom:12px;color:var(--neutral-800)">Financial Awareness Quiz</h2>
+      <p style="color:var(--neutral-600);margin-bottom:8px">10 questions · ~3 minutes · No personal data collected</p>
+      <p style="font-size:0.875rem;color:var(--neutral-400);margin-bottom:36px">Questions focus on financial habits and knowledge — not income or personal details.</p>
+      <button class="btn btn-primary" style="margin:0 auto" onclick="startQuiz()">Start Quiz →</button>
+    </div>`;
+}
+
+function startQuiz() {
+  quizState.started = true;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { current, answers } = quizState;
+  const q = QUESTIONS[current];
+  const total = QUESTIONS.length;
+  const pct = Math.round((current / total) * 100);
+
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-info">
+        <span>Question ${current + 1} of ${total}</span>
+        <span>${pct}% complete</span>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-q-num">Question ${current + 1}</div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, i) => `
+          <button class="quiz-option" onclick="selectAnswer(${i})">
+            <span class="quiz-option-circle">${String.fromCharCode(65+i)}</span>
+            <span>${opt}</span>
+          </button>`).join('')}
+      </div>
+      <div class="quiz-nav">
+        <button class="btn btn-outline" onclick="prevQuestion()" ${current === 0 ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>← Back</button>
+        <span style="font-size:0.8rem;color:var(--neutral-400)">Select an answer to continue</span>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled style="opacity:0.4;cursor:not-allowed">
+          ${current === total - 1 ? 'See Results →' : 'Next →'}
+        </button>
+      </div>
+    </div>`;
+
+  // Restore selection if user went back
+  if (answers[current] !== undefined) {
+    const opts = document.querySelectorAll('.quiz-option');
+    opts[answers[current]].classList.add('selected');
+    document.getElementById('nextBtn').disabled = false;
+    document.getElementById('nextBtn').style.opacity = '1';
+    document.getElementById('nextBtn').style.cursor = 'pointer';
+  }
+}
+
+function selectAnswer(idx) {
+  quizState.answers[quizState.current] = idx;
+  document.querySelectorAll('.quiz-option').forEach((o, i) => {
+    o.classList.toggle('selected', i === idx);
+  });
+  const btn = document.getElementById('nextBtn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+}
+
+function nextQuestion() {
+  if (quizState.answers[quizState.current] === undefined) return;
+  if (quizState.current < QUESTIONS.length - 1) {
+    quizState.current++;
+    renderQuestion();
+  } else {
+    renderResults();
+  }
+}
+
+function prevQuestion() {
+  if (quizState.current > 0) {
+    quizState.current--;
+    renderQuestion();
+  }
+}
+
+function renderResults() {
+  const { answers } = quizState;
+  const maxScore = QUESTIONS.length * 3;
+  const score = answers.reduce((sum, ans, qi) => sum + (QUESTIONS[qi].scores[ans] || 0), 0);
+  const pct = Math.round((score / maxScore) * 100);
+
+  let grade, msg, color, bg;
+  if (pct >= 80) {
+    grade = "Financial Champion 🏆";
+    msg = "Excellent! Your financial habits are strong. You understand budgeting, savings, and emergency preparedness well. Keep building on this foundation.";
+    color = "#1B5E20"; bg = "linear-gradient(135deg,#e8f5e9,#c8e6c9)";
+  } else if (pct >= 60) {
+    grade = "On the Right Track 📈";
+    msg = "Good work! You have solid financial awareness but there are some areas to strengthen — particularly around emergency savings and consistent tracking.";
+    color = "#E65100"; bg = "linear-gradient(135deg,#fff3e0,#ffe0b2)";
+  } else if (pct >= 40) {
+    grade = "Building Awareness 🌱";
+    msg = "You're aware of financial basics but need to develop more consistent habits. Focus on building an emergency fund and starting a simple monthly budget.";
+    color = "#1565C0"; bg = "linear-gradient(135deg,#e3f2fd,#bbdefb)";
+  } else {
+    grade = "Starting Your Journey 🚀";
+    msg = "Don't be discouraged — everyone starts somewhere! Begin with small, consistent steps: track your expenses this month and set aside even a small amount as savings.";
+    color = "#C0392B"; bg = "linear-gradient(135deg,#ffebee,#ffcdd2)";
+  }
+
+  const tips = [
+    { ico: "📊", tip: "Start tracking every expense this week, no matter how small." },
+    { ico: "🆘", tip: "Open a separate bank account specifically for emergencies." },
+    { ico: "📅", tip: "Write down a simple monthly budget before next month begins." },
+    { ico: "💡", tip: "Read one article about personal finance per week." },
+    { ico: "🎯", tip: "Set one concrete saving goal with a deadline and amount." },
+  ];
+
+  document.getElementById('quizContainer').innerHTML = `
+    <div class="quiz-card quiz-result">
+      <div class="result-circle" style="background:${bg}">
+        <span class="score" style="color:${color}">${score}</span>
+        <span class="score-denom" style="color:${color}">/ ${maxScore}</span>
+      </div>
+      <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:8px;font-weight:600">Your Result</div>
+      <div class="result-grade">${grade}</div>
+      <p class="result-msg">${msg}</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+        <button class="btn btn-primary" onclick="initQuiz()">Retake Quiz</button>
+        <button class="btn btn-outline" onclick="showPage('tips')">View Savings Tips →</button>
+      </div>
+      <div class="result-tips">
+        <h4>📋 Suggested Next Steps</h4>
+        ${tips.map(t => `<div class="result-tip-item"><span class="tip-ico">${t.ico}</span><span>${t.tip}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  // Lazy init pages
+  // Budget is init when page is shown
+});
+
+// Intersection Observer for animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animationPlayState = 'running';
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-up').forEach(el => {
+  el.style.animationPlayState = 'paused';
+  observer.observe(el);
+});
+</script>
 </body>
 </html>
